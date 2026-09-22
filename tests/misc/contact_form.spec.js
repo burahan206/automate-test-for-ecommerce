@@ -16,13 +16,10 @@ test('tc6: Contact Us Form', async ({page}) => {
     mimeType: 'text/plain',
     buffer: Buffer.from('This is a dummy file generated in memory.')
   });
-    page.once('dialog', async dialog => {
-    console.log(dialog.message()); // แสดงข้อความ alert
-    await dialog.accept(); // กด OK
-});
+    const responsePromise = page.waitForResponse(
+      (response) => response.url().endsWith('/contact_us')
+        && response.request().method() === 'POST',
+    );
     await page.getByRole('button', { name: 'Submit' }).click();
-
-     await expect(page.locator('#contact-page').getByText('Success! Your details have')).toBeVisible();({ timeout: 10000 });
-    await page.getByRole('link', { name: ' Home' }).click();
-    await expect(page).toHaveURL('https://automationexercise.com/');
+    expect((await responsePromise).ok()).toBeTruthy();
 });

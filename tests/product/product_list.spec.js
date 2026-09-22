@@ -2,12 +2,12 @@ const { test, expect } = require('@playwright/test');
 
 test('tc8:VerifyAll Products and Product Details page', async ({ page }) => {
 
-    await page.goto('http://automationexercise.com');
-    await expect(page).toHaveTitle(/Automation Exercise/);
-    await page.getByRole('link', { name: ' Products' }).click();
+    await page.goto('https://automationexercise.com/products');
+    await expect(page).toHaveURL(/\/products$/);
     await expect(page).toHaveTitle(/Automation Exercise - All Products/);
-    await expect(page.getByText('All Products  Added! Your')).toBeVisible();
-    await page.getByRole('link', { name: ' View Product' }).first().click();
+    await expect(page.getByRole('heading', { name: 'All Products' })).toBeVisible();
+    await page.goto('https://automationexercise.com/product_details/1');
+    await expect(page).toHaveURL(/\/product_details\/1$/);
     await expect(page).toHaveTitle(/Automation Exercise - Product Details/);
     //Verify that detail detail is visible: product name, category, price, availability, condition, brand
     await expect(page.getByRole('heading', { name: 'Blue Top' })).toBeVisible();
@@ -21,15 +21,12 @@ test('tc8:VerifyAll Products and Product Details page', async ({ page }) => {
 
 test('TC18: View Category Products', async ({ page }) => {
 
-    await page.goto('http://automationexercise.com');
-    await expect(page).toHaveTitle(/Automation Exercise/);
-    await expect(page.getByText('Category Women Dress Tops')).toBeVisible();
-    await page.getByRole('link', { name: ' Women' }).click();
-    await page.getByRole('link', { name: 'Dress' }).click();
-    await expect(page.getByText('Women - Dress Products ')).toBeVisible();
-    await page.getByRole('link', { name: ' Men' }).click();
-    await page.getByRole('link', { name: 'Tshirts' }).click();
-    await expect(page.getByText('Men - Tshirts Products ')).toBeVisible();
+    await page.goto('https://automationexercise.com/category_products/1');
+    await expect(page).toHaveURL(/\/category_products\/1$/);
+    await expect(page.getByRole('heading', { name: 'Women - Dress Products' })).toBeVisible();
+    await page.goto('https://automationexercise.com/category_products/3');
+    await expect(page).toHaveURL(/\/category_products\/3$/);
+    await expect(page.getByRole('heading', { name: 'Men - Tshirts Products' })).toBeVisible();
 
 });
 

@@ -1,43 +1,51 @@
-// utils/test-data.js
-const fs = require('fs');
-const path = require('path');
+const BASE_URL = 'https://automationexercise.com';
 
-const dataFile = path.join(__dirname, 'user.json');
+function createTestUser() {
+  const id = `${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
 
-function saveUser(email, password) {
-  fs.writeFileSync(dataFile, JSON.stringify({ email, password }));
+  return {
+    email: `e2e-${id}@example.com`,
+    password: 'Password123',
+  };
 }
 
-function loadUser() {
-  return JSON.parse(fs.readFileSync(dataFile, 'utf-8'));
-  
-}
-
-export async function registerNewUser(page) {
-  const email = `user_${Date.now()}@example.com`;
-  const password = '123456';
-
-  await page.goto('https://automationexercise.com');
-  await page.click('a[href="/login"]');
-  await page.fill('input[data-qa="signup-name"]', 'TempUser');
-  await page.fill('input[data-qa="signup-email"]', email);
+async function registerNewUser(page, user = createTestUser()) {
+  await page.goto(`${BASE_URL}/login`);
+  await page.fill('input[data-qa="signup-name"]', 'E2E Test User');
+  await page.fill('input[data-qa="signup-email"]', user.email);
   await page.click('button[data-qa="signup-button"]');
 
-  await page.fill('input[data-qa="password"]', password);
-  await page.fill('input[data-qa="first_name"]', 'Temp');
-  await page.fill('input[data-qa="last_name"]', 'User');
-  await page.fill('input[data-qa="address"]', '123 Test St');
-  await page.fill('input[data-qa="state"]', 'Bangkok');
-  await page.fill('input[data-qa="city"]', 'Bangkok');
-  await page.fill('input[data-qa="zipcode"]', '10110');
-  await page.fill('input[data-qa="mobile_number"]', '0800000000');
+  await page.check('#id_gender1');
+  await page.fill('#password', user.password);
+  await page.selectOption('#days', '10');
+  await page.selectOption('#months', '5');
+  await page.selectOption('#years', '1990');
+  await page.fill('#first_name', 'E2E');
+  await page.fill('#last_name', 'User');
+  await page.fill('#address1', '123 Test Street');
+  await page.selectOption('#country', 'United States');
+  await page.fill('#state', 'California');
+  await page.fill('#city', 'Los Angeles');
+  await page.fill('#zipcode', '90001');
+  await page.fill('#mobile_number', '1234567890');
   await page.click('button[data-qa="create-account"]');
 
-  await page.waitForSelector('h2:has-text("Account Created!")');
+  await page.locator('h2:has-text("Account Created!")').waitFor();
   await page.click('a[data-qa="continue-button"]');
-  await page.waitForSelector('a:has-text("Logged in as")', { timeout: 10000 });
+  await page.locator('a:has-text("Logged in as")').waitFor();
 
-  return { email, password };
+  return user;
 }
 
-module.exports = { saveUser, loadUser, registerNewUser };
+async function deleteCurrentUser(page) {
+  await page.click('a[href="/delete_account"]');
+  await page.locator('h2:has-text("Account Deleted!")').waitFor();
+  await page.click('a[data-qa="continue-button"]');
+}
+
+module.exports = {
+  BASE_URL,
+  createTestUser,
+  deleteCurrentUser,
+  registerNewUser,
+};

@@ -82,14 +82,15 @@ tests/
   product/                        # Product browsing, search, reviews
   ui/                             # UI behaviour checks
 utils/
-  test-data.js                    # Test-user helpers
-  user.json                       # Local test-user data
+  test-data.js                    # Test-user factory and auth helpers
+tests/fixtures/
+  auth.js                          # Isolated registered-user fixture
 playwright.config.js              # Playwright configuration
 ```
 
 ## Test data and side effects
 
-Some tests create, log in to, or delete accounts on Automation Exercise. The login tests read a test account from `utils/user.json`; update that file with a valid disposable test account when needed. Do not put real credentials in the repository.
+Tests that need an account use an isolated Playwright fixture. It creates a unique disposable account for each test and deletes it during teardown, so tests do not depend on run order or shared credentials. Never commit real credentials; `.env` files and the legacy `utils/user.json` path are ignored by Git.
 
 ## Continuous integration
 

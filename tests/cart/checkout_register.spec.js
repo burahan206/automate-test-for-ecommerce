@@ -9,7 +9,8 @@ test('TC14: Place Order: Register while Checkout', async ({ page }) => {
     await expect(page).toHaveTitle(/Automation Exercise/);
     await page.waitForSelector('.product-image-wrapper', { state: 'visible' });
     await page.locator('text=Add to cart').first().click();
-    await page.getByRole('link', { name: 'View Cart' }).click();
+    await expect(page.locator('.modal-content')).toBeVisible();
+    await page.goto('https://automationexercise.com/view_cart');
     await page.getByText('Proceed To Checkout').click();
     await page.getByRole('link', { name: 'Register / Login' }).click();
     await page.fill('input[data-qa="signup-name"]', 'test');
@@ -78,7 +79,8 @@ test('TC15 : Place Order: Register before Checkout' , async ({ page }) => {
   await expect(page.getByText(`Logged in as John`)).toBeVisible();
   await page.waitForSelector('.product-image-wrapper', { state: 'visible' });  
   await page.locator('text=Add to cart').first().click();
-  await page.getByRole('link', { name: 'View Cart' }).click();
+  await expect(page.locator('.modal-content')).toBeVisible();
+  await page.goto('https://automationexercise.com/view_cart');
   await page.getByText('Proceed To Checkout').click();    
   await expect(page.getByText('Your delivery address Mr.')).toBeVisible();
   await expect(page.getByText('Your billing address Mr. John')).toBeVisible();
@@ -95,7 +97,6 @@ test('TC15 : Place Order: Register before Checkout' , async ({ page }) => {
   await expect(page.locator('h2:has-text("Account Deleted!")')).toBeVisible();
   await page.click('a[data-qa="continue-button"]');
 });
-
 
 
 

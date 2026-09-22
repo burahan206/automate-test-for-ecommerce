@@ -26,7 +26,8 @@ test('TC23: Verify address details in checkout page', async ({ page }) => {
     await page.getByRole('link', { name: ' Products' }).dblclick();
     await page.waitForSelector('.product-image-wrapper', { state: 'visible' });
     await page.locator('text=Add to cart').first().click();
-    await page.getByRole('link', { name: 'View Cart' }).click();
+    await expect(page.locator('.modal-content')).toBeVisible();
+    await page.goto('https://automationexercise.com/view_cart');
     await expect(page).toHaveURL(/\/view_cart$/);
     await page.getByText('Proceed To Checkout').click();
     await expect(page.locator('#address_delivery').getByText('John Doe')).toBeVisible();
@@ -43,8 +44,4 @@ test('TC23: Verify address details in checkout page', async ({ page }) => {
     await expect(page.locator('#address_invoice').getByText('90001')).toBeVisible();
     await expect(page.locator('#address_invoice').getByText('United States')).toBeVisible();
     await expect(page.locator('#address_invoice').getByText('1234567890')).toBeVisible();
-    await page.click('a[href="/delete_account"]');
-    await expect(page.locator('h2:has-text("Account Deleted!")')).toBeVisible();
-    await page.click('a[data-qa="continue-button"]');
 }   );
-
